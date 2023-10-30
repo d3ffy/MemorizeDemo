@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    let BUTTON_WIDTH: CGFloat = 60
-    let BUTTON_HEIGHT: CGFloat = 60
+    let BUTTON_WIDTH: CGFloat = 50
+    let BUTTON_HEIGHT: CGFloat = 50
     @State var halloween_emojis = ["👻", "🎃", "🕷️", "💀", "🧙", "👿", "😱", "🍭"]
     @State var christmas_emojis = ["☃️", "🎅", "🦌", "🎄", "❄️", "🎁", "🌟", "👼"]
     @State var valentine_emojis = ["♥️", "🍫", "💐", "🧸", "👩‍❤️‍👨", "💘", "🌹", "🥰"]
@@ -13,10 +13,9 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Text("Memorize Game!")
+            Text("Memorize!")
                 .font(.largeTitle)
                 .bold()
-                .padding(.top, 10)
                 .foregroundColor(.blue)
                 .padding(.bottom, 10)
 
@@ -39,12 +38,12 @@ struct ContentView: View {
     }
 
     var themeSelectionButtons: some View {
-        HStack {
+        HStack(spacing : 40) {
             Button(action: {
                 self.shuffleEmoji(for: halloween_emojis)
             }) {
                 VStack {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "brain")
                         .resizable()
                         .frame(width: BUTTON_WIDTH, height: BUTTON_HEIGHT)
                     Text("Halloween")
@@ -55,7 +54,7 @@ struct ContentView: View {
                 self.shuffleEmoji(for: christmas_emojis)
             }) {
                 VStack {
-                    Image(systemName: "gift.fill")
+                    Image(systemName: "gift")
                         .resizable()
                         .frame(width: BUTTON_WIDTH, height: BUTTON_HEIGHT)
                     Text("Christmas")
@@ -66,14 +65,15 @@ struct ContentView: View {
                 self.shuffleEmoji(for: valentine_emojis)
             }) {
                 VStack {
-                    Image(systemName: "heart.fill")
+                    Image(systemName: "heart")
                         .resizable()
                         .frame(width: BUTTON_WIDTH, height: BUTTON_HEIGHT)
                     Text("Valentine")
                 }
             }
         }
-        .padding(.horizontal, 50)
+        .padding(.top, 10)
+        .colorMultiply(.purple)
     }
 
 
@@ -96,7 +96,7 @@ struct CardView: View {
             if isFaceUp {
                 base.foregroundColor(.white)
                 base.strokeBorder(lineWidth: 2)
-                Text(content).font(.title)
+                Text(content).font(.largeTitle)
             } else {
                 base
             }
@@ -107,8 +107,6 @@ struct CardView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
 }
