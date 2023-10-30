@@ -1,82 +1,102 @@
-//
-//  ContentView.swift
-//  Memorize
-//
-//  Created by Class Demo on 5/10/2566 BE.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    @State var emojis = ["👻", "🎃", "🕷️", "👹", "💀", "🕸️", "🧙", "🙀", "👿", "😱", "☠️", "🍭"]
-    
-    @State var cardCount = 12
-    
+    let BUTTON_WIDTH: CGFloat = 60
+    let BUTTON_HEIGHT: CGFloat = 60
+    @State var halloween_emojis = ["👻", "🎃", "🕷️", "💀", "🧙", "👿", "😱", "🍭"]
+    @State var christmas_emojis = ["☃️", "🎅", "🦌", "🎄", "❄️", "🎁", "🌟", "👼"]
+    @State var valentine_emojis = ["♥️", "🍫", "💐", "🧸", "👩‍❤️‍👨", "💘", "🌹", "🥰"]
+
+    @State var selectedTheme: [String] = []
+    @State var cardCount = 16
+
+
     var body: some View {
         VStack {
             Text("Memorize Game!")
                 .font(.largeTitle)
                 .bold()
                 .padding(.top, 10)
-                .foregroundColor(.mint)
+                .foregroundColor(.blue)
                 .padding(.bottom, 10)
-            
+
             ScrollView {
                 cards
             }
-            cardCountAdjuster
-        }
-        .padding()
+            themeSelectionButtons
+            
+        }.padding()
     }
-    
+
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]){
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 70))]){
             ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: emojis[index])
+                CardView(content: selectedTheme.indices.contains(index) ? selectedTheme[index] : "")
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }
         .foregroundColor(.cyan)
     }
-    
-    var cardCountAdjuster: some View {
+
+    var themeSelectionButtons: some View {
         HStack {
-            cardRemover
-            Spacer()
-            cardAdder
+            Button(action: {
+                self.shuffleEmoji(for: halloween_emojis)
+            }) {
+                VStack {
+                    Image(systemName: "star.fill")
+                        .resizable()
+                        .frame(width: BUTTON_WIDTH, height: BUTTON_HEIGHT)
+                    Text("Halloween")
+                }
+            }
+
+            Button(action: {
+                self.shuffleEmoji(for: christmas_emojis)
+            }) {
+                VStack {
+                    Image(systemName: "gift.fill")
+                        .resizable()
+                        .frame(width: BUTTON_WIDTH, height: BUTTON_HEIGHT)
+                    Text("Christmas")
+                }
+            }
+
+            Button(action: {
+                self.shuffleEmoji(for: valentine_emojis)
+            }) {
+                VStack {
+                    Image(systemName: "heart.fill")
+                        .resizable()
+                        .frame(width: BUTTON_WIDTH, height: BUTTON_HEIGHT)
+                    Text("Valentine")
+                }
+            }
         }
-        .imageScale(.large)
-        .font(.largeTitle)
+        .padding(.horizontal, 50)
     }
-    
-    func cardCountAdjuster(offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }) {
-            Image(systemName:  symbol)
-        }.disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-    
-    var cardRemover: some View {
-        cardCountAdjuster(offset: -1, symbol: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(offset: 1, symbol: "rectangle.stack.badge.plus.fill")
+
+
+    private func shuffleEmoji(for theme: [String]) {
+        var shuffledTheme = theme.shuffled()
+        while shuffledTheme.count < cardCount {
+            shuffledTheme.append(contentsOf: theme.shuffled())
+        }
+        selectedTheme = Array(shuffledTheme.prefix(cardCount))
     }
 }
 
 struct CardView: View {
     let content: String
-    @State var isFaceUp = true
-    
+    @State var isFaceUp = false
+
     var body: some View {
         ZStack {
             let base = RoundedRectangle(cornerRadius: 12)
             if isFaceUp {
                 base.foregroundColor(.white)
                 base.strokeBorder(lineWidth: 2)
-                Text(content).font(.largeTitle)
+                Text(content).font(.title)
             } else {
                 base
             }
@@ -87,6 +107,8 @@ struct CardView: View {
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
